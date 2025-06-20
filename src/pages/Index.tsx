@@ -6,11 +6,14 @@ import { NavigationTabs } from '@/components/NavigationTabs';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { HistoryPanel } from '@/components/HistoryPanel';
 import { useToast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui/button';
+import { Sunrise, Moon } from 'lucide-react';
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [userName, setUserName] = useState('User 1');
+  const [selectedTimeOfDay, setSelectedTimeOfDay] = useState<'morning' | 'evening'>('morning');
   const [morningTasks, setMorningTasks] = useState([
     { id: '1', text: 'Turn off lights', completed: false, completedBy: null, completedAt: null },
     { id: '2', text: 'Turn off gas oven', completed: false, completedBy: null, completedAt: null },
@@ -89,22 +92,48 @@ const Index = () => {
     })));
   };
 
+  const getCurrentTasks = () => {
+    return selectedTimeOfDay === 'morning' ? morningTasks : nightTasks;
+  };
+
   const renderContent = () => {
     switch (activeTab) {
       case 'home':
         return (
           <div className="space-y-6">
+            {/* Morning/Evening Toggle */}
+            <div className="flex space-x-2">
+              <Button
+                onClick={() => setSelectedTimeOfDay('morning')}
+                variant={selectedTimeOfDay === 'morning' ? 'default' : 'outline'}
+                className={`flex items-center space-x-2 ${
+                  selectedTimeOfDay === 'morning'
+                    ? 'bg-orange-500 hover:bg-orange-600'
+                    : ''
+                }`}
+              >
+                <Sunrise className="w-4 h-4" />
+                <span>Morning</span>
+              </Button>
+              <Button
+                onClick={() => setSelectedTimeOfDay('evening')}
+                variant={selectedTimeOfDay === 'evening' ? 'default' : 'outline'}
+                className={`flex items-center space-x-2 ${
+                  selectedTimeOfDay === 'evening'
+                    ? 'bg-indigo-500 hover:bg-indigo-600'
+                    : ''
+                }`}
+              >
+                <Moon className="w-4 h-4" />
+                <span>Evening</span>
+              </Button>
+            </div>
+
             <TaskSection
-              title="Morning Tasks"
-              tasks={morningTasks}
-              onToggleTask={(taskId) => toggleTask(taskId, true)}
-              timeOfDay="morning"
-            />
-            <TaskSection
-              title="Night Tasks"
-              tasks={nightTasks}
-              onToggleTask={(taskId) => toggleTask(taskId, false)}
-              timeOfDay="night"
+              title={selectedTimeOfDay === 'morning' ? 'Morning Tasks' : 'Evening Tasks'}
+              tasks={getCurrentTasks()}
+              onToggleTask={(taskId) => toggleTask(taskId, selectedTimeOfDay === 'morning')}
+              timeOfDay={selectedTimeOfDay === 'morning' ? 'morning' : 'night'}
             />
           </div>
         );
