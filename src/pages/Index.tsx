@@ -10,6 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [userName, setUserName] = useState('User 1');
   const [morningTasks, setMorningTasks] = useState([
     { id: '1', text: 'Turn off lights', completed: false, completedBy: null, completedAt: null },
     { id: '2', text: 'Turn off gas oven', completed: false, completedBy: null, completedAt: null },
@@ -40,7 +41,6 @@ const Index = () => {
   }, [isDarkMode]);
 
   const toggleTask = (taskId: string, isMorning: boolean) => {
-    const currentUser = 'User 1'; // This would come from auth in a real app
     const now = new Date().toISOString();
     
     if (isMorning) {
@@ -49,7 +49,7 @@ const Index = () => {
           ? { 
               ...task, 
               completed: !task.completed,
-              completedBy: !task.completed ? currentUser : null,
+              completedBy: !task.completed ? userName : null,
               completedAt: !task.completed ? now : null
             }
           : task
@@ -60,7 +60,7 @@ const Index = () => {
           ? { 
               ...task, 
               completed: !task.completed,
-              completedBy: !task.completed ? currentUser : null,
+              completedBy: !task.completed ? userName : null,
               completedAt: !task.completed ? now : null
             }
           : task
@@ -111,8 +111,9 @@ const Index = () => {
       case 'history':
         return (
           <HistoryPanel 
-            morningTasks={morningTasks}
+            morningT asks={morningTasks}
             nightTasks={nightTasks}
+            isDarkMode={isDarkMode}
           />
         );
       case 'settings':
@@ -123,6 +124,10 @@ const Index = () => {
             isDarkMode={isDarkMode}
             setIsDarkMode={setIsDarkMode}
             onResetTasks={resetDailyTasks}
+            morningTasks={morningTasks}
+            nightTasks={nightTasks}
+            setMorningTasks={setMorningTasks}
+            setNightTasks={setNightTasks}
           />
         );
       default:
@@ -137,7 +142,11 @@ const Index = () => {
         : 'bg-gradient-to-br from-blue-50 via-white to-orange-50'
     }`}>
       <div className="max-w-md mx-auto min-h-screen flex flex-col">
-        <Header isDarkMode={isDarkMode} />
+        <Header 
+          isDarkMode={isDarkMode} 
+          userName={userName}
+          setUserName={setUserName}
+        />
         
         <main className="flex-1 px-4 py-6 pb-20 overflow-y-auto">
           {renderContent()}

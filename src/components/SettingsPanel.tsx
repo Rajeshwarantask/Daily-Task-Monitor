@@ -5,6 +5,15 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { TaskManagement } from './TaskManagement';
+
+interface Task {
+  id: string;
+  text: string;
+  completed: boolean;
+  completedBy: string | null;
+  completedAt: string | null;
+}
 
 interface SettingsPanelProps {
   reminderTimes: {
@@ -15,6 +24,10 @@ interface SettingsPanelProps {
   isDarkMode: boolean;
   setIsDarkMode: (isDark: boolean) => void;
   onResetTasks: () => void;
+  morningTasks: Task[];
+  nightTasks: Task[];
+  setMorningTasks: (tasks: Task[]) => void;
+  setNightTasks: (tasks: Task[]) => void;
 }
 
 export const SettingsPanel: React.FC<SettingsPanelProps> = ({
@@ -22,7 +35,11 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   setReminderTimes,
   isDarkMode,
   setIsDarkMode,
-  onResetTasks
+  onResetTasks,
+  morningTasks,
+  nightTasks,
+  setMorningTasks,
+  setNightTasks
 }) => {
   return (
     <div className="space-y-6">
@@ -92,6 +109,21 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
           />
         </div>
       </div>
+
+      {/* Task Management Section */}
+      <TaskManagement
+        title="Morning Tasks"
+        tasks={morningTasks}
+        onUpdateTasks={setMorningTasks}
+        isDarkMode={isDarkMode}
+      />
+
+      <TaskManagement
+        title="Evening Tasks"
+        tasks={nightTasks}
+        onUpdateTasks={setNightTasks}
+        isDarkMode={isDarkMode}
+      />
 
       <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 dark:border-slate-700/20">
         <Button

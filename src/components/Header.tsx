@@ -1,12 +1,15 @@
 
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
+import { UserProfile } from './UserProfile';
 
 interface HeaderProps {
   isDarkMode: boolean;
+  userName: string;
+  setUserName: (name: string) => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ isDarkMode }) => {
+export const Header: React.FC<HeaderProps> = ({ isDarkMode, userName, setUserName }) => {
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -41,6 +44,11 @@ export const Header: React.FC<HeaderProps> = ({ isDarkMode }) => {
               </p>
             </div>
           </div>
+          <UserProfile
+            isDarkMode={isDarkMode}
+            userName={userName}
+            setUserName={setUserName}
+          />
         </div>
       </div>
     </header>
