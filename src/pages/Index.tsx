@@ -111,7 +111,7 @@ const Index = () => {
       case 'history':
         return (
           <HistoryPanel 
-            morningT asks={morningTasks}
+            morningTasks={morningTasks}
             nightTasks={nightTasks}
             isDarkMode={isDarkMode}
           />
