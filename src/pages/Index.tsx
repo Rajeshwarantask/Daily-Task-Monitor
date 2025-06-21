@@ -5,6 +5,8 @@ import { Header } from '@/components/Header';
 import { NavigationTabs } from '@/components/NavigationTabs';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { HistoryPanel } from '@/components/HistoryPanel';
+import { NotificationBanner } from '@/components/NotificationBanner';
+import { useNotificationSystem } from '@/hooks/useNotificationSystem';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Sunrise, Moon } from 'lucide-react';
@@ -33,6 +35,14 @@ const Index = () => {
     night: '22:30'
   });
   const { toast } = useToast();
+
+  // Initialize notification system
+  const { notification, dismissNotification } = useNotificationSystem(
+    morningTasks,
+    nightTasks,
+    reminderTimes,
+    userName
+  );
 
   // Toggle dark mode
   useEffect(() => {
@@ -94,6 +104,12 @@ const Index = () => {
 
   const getCurrentTasks = () => {
     return selectedTimeOfDay === 'morning' ? morningTasks : nightTasks;
+  };
+
+  const getCurrentNotificationTasks = () => {
+    if (notification.type === 'morning') return morningTasks;
+    if (notification.type === 'evening') return nightTasks;
+    return [];
   };
 
   const renderContent = () => {
@@ -177,7 +193,18 @@ const Index = () => {
           setUserName={setUserName}
         />
         
-        <main className="flex-1 px-4 py-6 pb-20 overflow-y-auto">
+        {/* Persistent Notification Banner */}
+        <NotificationBanner
+          isActive={notification.isActive}
+          type={notification.type}
+          tasks={getCurrentNotificationTasks()}
+          onDismiss={dismissNotification}
+          isDarkMode={isDarkMode}
+        />
+        
+        <main className={`flex-1 px-4 py-6 pb-20 overflow-y-auto ${
+          notification.isActive ? 'pt-32' : ''
+        }`}>
           {renderContent()}
         </main>
 

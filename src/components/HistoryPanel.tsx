@@ -47,6 +47,10 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
     });
   };
 
+  const handleTimeOfDayChange = (value: string) => {
+    setSelectedTimeOfDay(value as 'all' | 'morning' | 'evening');
+  };
+
   const getFilteredTasks = () => {
     let tasks: Task[] = [];
     
@@ -107,7 +111,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({
                 ))}
               </SelectContent>
             </Select>
-            <Select value={selectedTimeOfDay} onValueChange={setSelectedTimeOfDay}>
+            <Select value={selectedTimeOfDay} onValueChange={handleTimeOfDayChange}>
               <SelectTrigger className="w-32">
                 <SelectValue />
               </SelectTrigger>
