@@ -60,7 +60,6 @@ export const useNotificationSystem = (
         body: notificationBody,
         icon: '/favicon.ico',
         requireInteraction: true, // Prevents auto-dismiss
-        persistent: true,
         tag: `${type}-routine-${Date.now()}` // Unique tag to prevent duplicates
       });
 

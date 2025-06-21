@@ -20,22 +20,17 @@ export const UserProfile: React.FC<UserProfileProps> = ({
 }) => {
   const [tempName, setTempName] = useState(userName);
 
-  // Mock data for other household members
+  // Mock data for other household members - read-only list
   const householdMembers = [
-    { id: '1', name: 'User 1', isActive: userName === 'User 1' },
-    { id: '2', name: 'User 2', isActive: userName === 'User 2' },
-    { id: '3', name: 'Mom', isActive: userName === 'Mom' },
-    { id: '4', name: 'Dad', isActive: userName === 'Dad' },
-    { id: '5', name: 'Sister', isActive: userName === 'Sister' },
+    { id: '1', name: 'User 1', isActive: userName === 'User 1', role: 'Household Member' },
+    { id: '2', name: 'User 2', isActive: userName === 'User 2', role: 'Household Member' },
+    { id: '3', name: 'Mom', isActive: userName === 'Mom', role: 'Household Member' },
+    { id: '4', name: 'Dad', isActive: userName === 'Dad', role: 'Household Member' },
+    { id: '5', name: 'Sister', isActive: userName === 'Sister', role: 'Household Member' },
   ];
 
   const handleSaveName = () => {
     setUserName(tempName);
-  };
-
-  const handleSwitchUser = (newUserName: string) => {
-    setUserName(newUserName);
-    setTempName(newUserName);
   };
 
   return (
@@ -78,12 +73,12 @@ export const UserProfile: React.FC<UserProfileProps> = ({
               <p className={`text-sm ${
                 isDarkMode ? 'text-slate-300' : 'text-slate-600'
               }`}>
-                Household Member
+                Household Member (You)
               </p>
             </div>
           </div>
 
-          {/* Edit Name Section */}
+          {/* Edit Name Section - Only for current user */}
           <div className="space-y-4">
             <div>
               <Label htmlFor="user-name" className={isDarkMode ? 'text-slate-200' : 'text-slate-700'}>
@@ -102,7 +97,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
             </Button>
           </div>
 
-          {/* Household Members Section */}
+          {/* Household Members Section - Read-only list */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
               <Users className={`w-5 h-5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`} />
@@ -117,14 +112,13 @@ export const UserProfile: React.FC<UserProfileProps> = ({
               {householdMembers.map((member) => (
                 <div
                   key={member.id}
-                  className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                  className={`flex items-center justify-between p-3 rounded-lg border ${
                     member.isActive
                       ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700'
                       : isDarkMode
-                      ? 'bg-slate-800 border-slate-700 hover:bg-slate-700'
-                      : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
+                      ? 'bg-slate-800 border-slate-700'
+                      : 'bg-slate-50 border-slate-200'
                   }`}
-                  onClick={() => handleSwitchUser(member.name)}
                 >
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-8 h-8">
@@ -138,21 +132,50 @@ export const UserProfile: React.FC<UserProfileProps> = ({
                         {member.name.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <span className={`font-medium ${
-                      member.isActive
-                        ? 'text-blue-700 dark:text-blue-300'
-                        : isDarkMode
-                        ? 'text-slate-200'
-                        : 'text-slate-700'
-                    }`}>
-                      {member.name}
-                    </span>
+                    <div>
+                      <span className={`font-medium block ${
+                        member.isActive
+                          ? 'text-blue-700 dark:text-blue-300'
+                          : isDarkMode
+                          ? 'text-slate-200'
+                          : 'text-slate-700'
+                      }`}>
+                        {member.name}
+                      </span>
+                      <span className={`text-xs ${
+                        member.isActive
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : isDarkMode
+                          ? 'text-slate-400'
+                          : 'text-slate-500'
+                      }`}>
+                        {member.role}
+                      </span>
+                    </div>
                   </div>
-                  {member.isActive && (
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  )}
+                  <div className="flex items-center space-x-2">
+                    {member.isActive && (
+                      <>
+                        <span className={`text-xs font-medium ${
+                          isDarkMode ? 'text-blue-300' : 'text-blue-600'
+                        }`}>
+                          Active
+                        </span>
+                        <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      </>
+                    )}
+                  </div>
                 </div>
               ))}
+            </div>
+            
+            {/* Information note */}
+            <div className={`text-xs p-3 rounded-lg ${
+              isDarkMode 
+                ? 'bg-slate-800 text-slate-400 border border-slate-700' 
+                : 'bg-slate-50 text-slate-600 border border-slate-200'
+            }`}>
+              <p>All members share the same checklist. Task updates are logged with the member's name and timestamp for accountability.</p>
             </div>
           </div>
         </div>
