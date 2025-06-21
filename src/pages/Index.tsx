@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { TaskSection } from '@/components/TaskSection';
 import { Header } from '@/components/Header';
@@ -6,7 +5,9 @@ import { NavigationTabs } from '@/components/NavigationTabs';
 import { SettingsPanel } from '@/components/SettingsPanel';
 import { HistoryPanel } from '@/components/HistoryPanel';
 import { NotificationBanner } from '@/components/NotificationBanner';
+import { UserOnboarding } from '@/components/UserOnboarding';
 import { useNotificationSystem } from '@/hooks/useNotificationSystem';
+import { useUserData } from '@/hooks/useUserData';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Sunrise, Moon } from 'lucide-react';
@@ -14,8 +15,18 @@ import { Sunrise, Moon } from 'lucide-react';
 const Index = () => {
   const [activeTab, setActiveTab] = useState('home');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [userName, setUserName] = useState('User 1');
   const [selectedTimeOfDay, setSelectedTimeOfDay] = useState<'morning' | 'evening'>('morning');
+  
+  // User data management
+  const { 
+    currentUser, 
+    householdMembers, 
+    isFirstTime, 
+    loginUser, 
+    updateCurrentUserName, 
+    logoutUser 
+  } = useUserData();
+
   const [morningTasks, setMorningTasks] = useState([
     { id: '1', text: 'Turn off lights', completed: false, completedBy: null, completedAt: null },
     { id: '2', text: 'Turn off gas oven', completed: false, completedBy: null, completedAt: null },
@@ -34,6 +45,7 @@ const Index = () => {
     morning: '06:30',
     night: '22:30'
   });
+
   const { toast } = useToast();
 
   // Initialize notification system
@@ -41,7 +53,7 @@ const Index = () => {
     morningTasks,
     nightTasks,
     reminderTimes,
-    userName
+    currentUser?.name || 'Unknown User'
   );
 
   // Toggle dark mode
@@ -53,8 +65,14 @@ const Index = () => {
     }
   }, [isDarkMode]);
 
+  // Show onboarding if first time or no current user
+  if (isFirstTime || !currentUser) {
+    return <UserOnboarding onComplete={loginUser} isDarkMode={isDarkMode} />;
+  }
+
   const toggleTask = (taskId: string, isMorning: boolean) => {
     const now = new Date().toISOString();
+    const userName = currentUser.name;
     
     if (isMorning) {
       setMorningTasks(prev => prev.map(task => 
@@ -110,6 +128,10 @@ const Index = () => {
     if (notification.type === 'morning') return morningTasks;
     if (notification.type === 'evening') return nightTasks;
     return [];
+  };
+
+  const handleUserNameUpdate = (newName: string) => {
+    updateCurrentUserName(newName);
   };
 
   const renderContent = () => {
@@ -189,8 +211,11 @@ const Index = () => {
       <div className="max-w-md mx-auto min-h-screen flex flex-col">
         <Header 
           isDarkMode={isDarkMode} 
-          userName={userName}
-          setUserName={setUserName}
+          userName={currentUser.name}
+          setUserName={handleUserNameUpdate}
+          householdMembers={householdMembers}
+          onUpdateUserName={handleUserNameUpdate}
+          onLogout={logoutUser}
         />
         
         {/* Persistent Notification Banner */}

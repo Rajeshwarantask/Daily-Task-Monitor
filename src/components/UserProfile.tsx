@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { User, Settings, Users } from 'lucide-react';
+import { User, Settings, Users, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -11,26 +11,33 @@ interface UserProfileProps {
   isDarkMode: boolean;
   userName: string;
   setUserName: (name: string) => void;
+  householdMembers: Array<{
+    id: string;
+    name: string;
+    role: string;
+    isActive: boolean;
+  }>;
+  onUpdateUserName: (newName: string) => void;
+  onLogout: () => void;
 }
 
 export const UserProfile: React.FC<UserProfileProps> = ({
   isDarkMode,
   userName,
-  setUserName
+  householdMembers,
+  onUpdateUserName,
+  onLogout
 }) => {
   const [tempName, setTempName] = useState(userName);
 
-  // Mock data for other household members - read-only list
-  const householdMembers = [
-    { id: '1', name: 'User 1', isActive: userName === 'User 1', role: 'Household Member' },
-    { id: '2', name: 'User 2', isActive: userName === 'User 2', role: 'Household Member' },
-    { id: '3', name: 'Mom', isActive: userName === 'Mom', role: 'Household Member' },
-    { id: '4', name: 'Dad', isActive: userName === 'Dad', role: 'Household Member' },
-    { id: '5', name: 'Sister', isActive: userName === 'Sister', role: 'Household Member' },
-  ];
-
   const handleSaveName = () => {
-    setUserName(tempName);
+    if (tempName.trim()) {
+      onUpdateUserName(tempName.trim());
+    }
+  };
+
+  const handleLogout = () => {
+    onLogout();
   };
 
   return (
@@ -73,7 +80,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
               <p className={`text-sm ${
                 isDarkMode ? 'text-slate-300' : 'text-slate-600'
               }`}>
-                Household Member (You)
+                {householdMembers.find(m => m.isActive)?.role || 'Household Member'} (You)
               </p>
             </div>
           </div>
@@ -177,6 +184,18 @@ export const UserProfile: React.FC<UserProfileProps> = ({
             }`}>
               <p>All members share the same checklist. Task updates are logged with the member's name and timestamp for accountability.</p>
             </div>
+          </div>
+
+          {/* Logout Section */}
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
+            <Button 
+              onClick={handleLogout}
+              variant="outline"
+              className="w-full flex items-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Logout</span>
+            </Button>
           </div>
         </div>
       </SheetContent>

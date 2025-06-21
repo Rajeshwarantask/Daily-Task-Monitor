@@ -7,9 +7,23 @@ interface HeaderProps {
   isDarkMode: boolean;
   userName: string;
   setUserName: (name: string) => void;
+  householdMembers: Array<{
+    id: string;
+    name: string;
+    role: string;
+    isActive: boolean;
+  }>;
+  onUpdateUserName: (newName: string) => void;
+  onLogout: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ isDarkMode, userName, setUserName }) => {
+export const Header: React.FC<HeaderProps> = ({ 
+  isDarkMode, 
+  userName, 
+  householdMembers, 
+  onUpdateUserName, 
+  onLogout 
+}) => {
   const today = new Date().toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
@@ -47,7 +61,10 @@ export const Header: React.FC<HeaderProps> = ({ isDarkMode, userName, setUserNam
           <UserProfile
             isDarkMode={isDarkMode}
             userName={userName}
-            setUserName={setUserName}
+            setUserName={onUpdateUserName}
+            householdMembers={householdMembers}
+            onUpdateUserName={onUpdateUserName}
+            onLogout={onLogout}
           />
         </div>
       </div>
