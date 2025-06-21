@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { User, Settings } from 'lucide-react';
+import { User, Settings, Users } from 'lucide-react';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -20,8 +20,22 @@ export const UserProfile: React.FC<UserProfileProps> = ({
 }) => {
   const [tempName, setTempName] = useState(userName);
 
+  // Mock data for other household members
+  const householdMembers = [
+    { id: '1', name: 'User 1', isActive: userName === 'User 1' },
+    { id: '2', name: 'User 2', isActive: userName === 'User 2' },
+    { id: '3', name: 'Mom', isActive: userName === 'Mom' },
+    { id: '4', name: 'Dad', isActive: userName === 'Dad' },
+    { id: '5', name: 'Sister', isActive: userName === 'Sister' },
+  ];
+
   const handleSaveName = () => {
     setUserName(tempName);
+  };
+
+  const handleSwitchUser = (newUserName: string) => {
+    setUserName(newUserName);
+    setTempName(newUserName);
   };
 
   return (
@@ -46,6 +60,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
           </SheetTitle>
         </SheetHeader>
         <div className="space-y-6 mt-6">
+          {/* Current User Profile */}
           <div className="flex items-center space-x-4">
             <Avatar className="w-16 h-16">
               <AvatarFallback className={`text-2xl ${
@@ -68,6 +83,7 @@ export const UserProfile: React.FC<UserProfileProps> = ({
             </div>
           </div>
 
+          {/* Edit Name Section */}
           <div className="space-y-4">
             <div>
               <Label htmlFor="user-name" className={isDarkMode ? 'text-slate-200' : 'text-slate-700'}>
@@ -84,6 +100,60 @@ export const UserProfile: React.FC<UserProfileProps> = ({
             <Button onClick={handleSaveName} className="w-full">
               Save Changes
             </Button>
+          </div>
+
+          {/* Household Members Section */}
+          <div className="space-y-4">
+            <div className="flex items-center space-x-2">
+              <Users className={`w-5 h-5 ${isDarkMode ? 'text-slate-300' : 'text-slate-600'}`} />
+              <h3 className={`text-lg font-semibold ${
+                isDarkMode ? 'text-white' : 'text-slate-800'
+              }`}>
+                Household Members
+              </h3>
+            </div>
+            
+            <div className="space-y-2">
+              {householdMembers.map((member) => (
+                <div
+                  key={member.id}
+                  className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                    member.isActive
+                      ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-700'
+                      : isDarkMode
+                      ? 'bg-slate-800 border-slate-700 hover:bg-slate-700'
+                      : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
+                  }`}
+                  onClick={() => handleSwitchUser(member.name)}
+                >
+                  <div className="flex items-center space-x-3">
+                    <Avatar className="w-8 h-8">
+                      <AvatarFallback className={`text-sm ${
+                        member.isActive
+                          ? 'bg-blue-500 text-white'
+                          : isDarkMode 
+                          ? 'bg-slate-600 text-white' 
+                          : 'bg-slate-300 text-slate-700'
+                      }`}>
+                        {member.name.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className={`font-medium ${
+                      member.isActive
+                        ? 'text-blue-700 dark:text-blue-300'
+                        : isDarkMode
+                        ? 'text-slate-200'
+                        : 'text-slate-700'
+                    }`}>
+                      {member.name}
+                    </span>
+                  </div>
+                  {member.isActive && (
+                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </SheetContent>
