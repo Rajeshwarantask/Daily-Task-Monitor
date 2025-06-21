@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <div className="py-[6px] px-[6px]">
+            <div className="px-0 py-0 mx-0 rounded-none">
               <CheckCircle className="w-6 h-6 text-white px-0 bg-[#72d6ff]" />
             </div>
             <div>
