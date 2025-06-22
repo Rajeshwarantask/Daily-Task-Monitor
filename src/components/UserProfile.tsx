@@ -5,6 +5,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { subscribeUserToPush } from "@/utils/pushNotifications";
+
 interface UserProfileProps {
   isDarkMode: boolean;
   userName: string;
@@ -29,6 +31,10 @@ export const UserProfile: React.FC<UserProfileProps> = ({
   const handleSaveName = () => {
     if (tempName.trim()) {
       onUpdateUserName(tempName.trim());
+      if (!localStorage.getItem("pushSubscribed")) {
+        subscribeUserToPush(tempName.trim());
+        localStorage.setItem("pushSubscribed", "true");
+      }
     }
   };
   const handleLogout = () => {
