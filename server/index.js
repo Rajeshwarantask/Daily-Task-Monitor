@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require('path');
 require("dotenv").config();
 require("./jobs/scheduler");
 const sendPushNotifications = require('./jobs/scheduler');
@@ -27,14 +28,14 @@ const historyRoutes = require('./routes/history');
 app.use('/api/history', historyRoutes);
 
 
-
 app.get('/api/test-push', async (req, res) => {
   const subs = await SubscriptionModel.find();
   for (const sub of subs) {
     try {
       await webPush.sendNotification(sub.subscription, JSON.stringify({
-        title: "Test Notification",
-        body: "This is a test push",
+        title: "Routine Reminder",
+        body: "You have incomplete tasks!",
+        tag: "routine-reminder"
       }));
     } catch (err) {
       console.error("Push error:", err);
@@ -53,6 +54,13 @@ app.post("/api/subscription/save", async (req, res) => {
 
   await SubscriptionModel.create({ subscription });
   res.status(201).json({ message: "Saved" });
+});
+
+app.use(express.static(path.join(__dirname, '../dist'))); // or wherever your build is
+
+// Catch-all route for SPA (must be after all other routes)
+app.get(/.*/, (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 8080;

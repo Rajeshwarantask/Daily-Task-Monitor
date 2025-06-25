@@ -30,7 +30,7 @@ export const HistoryPanel: React.FC<HistoryPanelProps> = ({ isDarkMode }) => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/api/history/${userId}/${selectedDate}`);
+        const response = await fetch(`/api/history/${userId}/${selectedDate}`);
 
         if (!response.ok) {
           const errorText = await response.text();

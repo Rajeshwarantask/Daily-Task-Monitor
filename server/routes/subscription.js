@@ -10,7 +10,7 @@ router.post("/save", async (req, res) => {
 });
 
 // Fetch history for a user
-router.get("/:userId", async (req, res) => {
+router.get("/user/:userId", async (req, res) => {
   const { userId } = req.params;
   const history = await TaskHistory.find({ userId });
   res.json(history);

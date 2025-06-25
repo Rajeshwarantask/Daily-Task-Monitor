@@ -16,7 +16,7 @@ export async function subscribeUserToPush(userName: string) {
     }
 
     // Send subscription to backend
-    await fetch("http://localhost:8081/api/subscription/save", {
+    await fetch("/api/subscription/save", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
