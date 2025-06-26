@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
 import { UserProfile } from './UserProfile';
@@ -32,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   });
 
   return (
-    <header className={`sticky top-0 z-10 backdrop-blur-md border-b transition-colors duration-300 ${
+    <header className={`sticky top-0 z-10 backdrop-blur-md border-b transition-all duration-120 ${
       isDarkMode 
         ? 'bg-slate-900/80 border-slate-700' 
         : 'bg-white/80 border-slate-200'

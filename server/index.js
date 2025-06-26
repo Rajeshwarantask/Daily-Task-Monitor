@@ -27,6 +27,9 @@ mongoose.connect(process.env.MONGO_URI, {
 const historyRoutes = require('./routes/history');
 app.use('/api/history', historyRoutes);
 
+const reminderTimeRoutes = require('./routes/reminderTime');
+app.use('/api/reminder-time', reminderTimeRoutes);
+
 
 app.get('/api/test-push', async (req, res) => {
   const subs = await SubscriptionModel.find();

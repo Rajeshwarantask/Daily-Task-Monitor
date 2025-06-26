@@ -1,12 +1,10 @@
-
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Clock, Moon, Sun, RotateCcw } from 'lucide-react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { TaskManagement } from './TaskManagement';
-
 interface Task {
   id: string;
   text: string;
@@ -41,6 +39,31 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
   setMorningTasks,
   setNightTasks
 }) => {
+  // Load from localStorage on mount
+  useEffect(() => {
+    const saved = localStorage.getItem('reminderTimes');
+    if (saved) {
+      setReminderTimes(JSON.parse(saved));
+    }
+  }, [setReminderTimes]);
+
+  // Save to localStorage on change
+  useEffect(() => {
+    localStorage.setItem('reminderTimes', JSON.stringify(reminderTimes));
+  }, [reminderTimes]);
+
+  const updateReminderTimes = (newTimes: { morning: string; night: string }) => {
+    setReminderTimes(newTimes);
+    // Save to localStorage (already done)
+    localStorage.setItem('reminderTimes', JSON.stringify(newTimes));
+    // Save to backend
+    fetch('/api/reminder-time', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newTimes)
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-white/20 dark:border-slate-700/20">
@@ -62,7 +85,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
               id="morning-time"
               type="time"
               value={reminderTimes.morning}
-              onChange={(e) => setReminderTimes({
+              onChange={(e) => updateReminderTimes({
                 ...reminderTimes,
                 morning: e.target.value
               })}
@@ -78,7 +101,7 @@ export const SettingsPanel: React.FC<SettingsPanelProps> = ({
               id="night-time"
               type="time"
               value={reminderTimes.night}
-              onChange={(e) => setReminderTimes({
+              onChange={(e) => updateReminderTimes({
                 ...reminderTimes,
                 night: e.target.value
               })}
