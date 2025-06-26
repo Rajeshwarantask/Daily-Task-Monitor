@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
   });
 
   return (
-    <header className={`sticky top-0 z-10 backdrop-blur-md border-b transition-all duration-120 ${
+    <header className={`sticky top-0 z-10 backdrop-blur-md border-b transition-all duration-90 ${
       isDarkMode 
         ? 'bg-slate-900/80 border-slate-700' 
         : 'bg-white/80 border-slate-200'
